@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import hello.Hello;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -16,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         ConstraintLayout layout_main = new ConstraintLayout(this);
         TextView textView_hello = new TextView(layout_main.getContext());
-        textView_hello.setText("Hello World!");
+        textView_hello.setText(Hello.greetings("World"));
 
         LayoutParams layoutParams_hello = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams_hello.bottomToBottom = ConstraintSet.PARENT_ID;
