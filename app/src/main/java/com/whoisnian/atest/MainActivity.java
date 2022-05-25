@@ -2,8 +2,10 @@ package com.whoisnian.atest;
 
 import static androidx.core.view.ViewCompat.generateViewId;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,37 +16,75 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import hello.Hello;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    ConstraintLayout layout_main;
+    TextView textView_hello;
+    TextView textView_counter;
+    Button button_counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ConstraintLayout layout_main = new ConstraintLayout(this);
-        TextView textView_hello = new TextView(layout_main.getContext());
+        layout_main = new ConstraintLayout(this);
+        textView_hello = new TextView(layout_main.getContext());
+        textView_counter = new TextView(layout_main.getContext());
+        button_counter = new Button(layout_main.getContext());
+
         textView_hello.setId(generateViewId());
         textView_hello.setText(Hello.greetings(Build.MODEL));
-        Button button_count = new Button(layout_main.getContext());
-        button_count.setId(generateViewId());
-        button_count.setAllCaps(false);
-        button_count.setText("https://counter.whoisnian.workers.dev/cnt\n-1");
 
-        LayoutParams layoutParams_hello = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams_hello.topToTop = ConstraintSet.PARENT_ID;
-        layoutParams_hello.bottomToTop = button_count.getId();
-        layoutParams_hello.leftToLeft = ConstraintSet.PARENT_ID;
-        layoutParams_hello.rightToRight = ConstraintSet.PARENT_ID;
-        layoutParams_hello.verticalChainStyle = ConstraintSet.CHAIN_PACKED;
+        textView_counter.setId(generateViewId());
+        textView_counter.setTextSize(48);
+        textView_counter.setTextColor(Color.parseColor("#27AE60"));
+        textView_counter.setText("-1");
 
-        LayoutParams layoutParams_count = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams_count.topToBottom = textView_hello.getId();
-        layoutParams_count.bottomToBottom = ConstraintSet.PARENT_ID;
-        layoutParams_count.leftToLeft = ConstraintSet.PARENT_ID;
-        layoutParams_count.rightToRight = ConstraintSet.PARENT_ID;
-        layoutParams_count.verticalChainStyle = ConstraintSet.CHAIN_PACKED;
+        button_counter.setId(generateViewId());
+        button_counter.setAllCaps(false);
+        button_counter.setText("increase by one");
+        button_counter.setOnClickListener(this);
 
-        layout_main.addView(textView_hello, layoutParams_hello);
-        layout_main.addView(button_count, layoutParams_count);
+        LayoutParams lp_textView_hello = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp_textView_hello.topToTop = ConstraintSet.PARENT_ID;
+        lp_textView_hello.bottomToTop = textView_counter.getId();
+        lp_textView_hello.leftToLeft = ConstraintSet.PARENT_ID;
+        lp_textView_hello.rightToRight = ConstraintSet.PARENT_ID;
+        lp_textView_hello.verticalChainStyle = ConstraintSet.CHAIN_PACKED;
+
+        LayoutParams lp_textView_counter = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp_textView_counter.topToBottom = textView_hello.getId();
+        lp_textView_counter.bottomToTop = button_counter.getId();
+        lp_textView_counter.leftToLeft = ConstraintSet.PARENT_ID;
+        lp_textView_counter.rightToRight = ConstraintSet.PARENT_ID;
+        lp_textView_counter.verticalChainStyle = ConstraintSet.CHAIN_PACKED;
+
+        LayoutParams lp_button_counter = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp_button_counter.topToBottom = textView_counter.getId();
+        lp_button_counter.bottomToBottom = ConstraintSet.PARENT_ID;
+        lp_button_counter.leftToLeft = ConstraintSet.PARENT_ID;
+        lp_button_counter.rightToRight = ConstraintSet.PARENT_ID;
+        lp_button_counter.verticalChainStyle = ConstraintSet.CHAIN_PACKED;
+
+        layout_main.addView(textView_hello, lp_textView_hello);
+        layout_main.addView(textView_counter, lp_textView_counter);
+        layout_main.addView(button_counter, lp_button_counter);
         setContentView(layout_main);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Thread(() -> {
+            String text = String.valueOf(Hello.getCnt());
+            textView_counter.post(() -> textView_counter.setText(text));
+        }).start();
+    }
+
+    @Override
+    public void onClick(View v) {
+        new Thread(() -> {
+            String text = String.valueOf(Hello.incCnt());
+            textView_counter.post(() -> textView_counter.setText(text));
+        }).start();
     }
 }
