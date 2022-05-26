@@ -11,7 +11,7 @@ func Greetings(name string) string {
 }
 
 func GetCnt() int64 {
-	resp, err := http.Get("https://counter.whoisnian.workers.dev/cnt")
+	resp, err := http.Get("https://counter.whoisnian.com/cnt")
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +20,7 @@ func GetCnt() int64 {
 }
 
 func IncCnt() int64 {
-	resp, err := http.Get("https://counter.whoisnian.workers.dev/inc")
+	resp, err := http.Get("https://counter.whoisnian.com/inc")
 	if err != nil {
 		panic(err)
 	}
