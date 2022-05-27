@@ -2,6 +2,7 @@ package com.whoisnian.atest;
 
 import static androidx.core.view.ViewCompat.generateViewId;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textView_hello;
     TextView textView_counter;
     Button button_counter;
+    AlertDialog.Builder dialogBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView_hello = new TextView(layout_main.getContext());
         textView_counter = new TextView(layout_main.getContext());
         button_counter = new Button(layout_main.getContext());
+        dialogBuilder = new AlertDialog.Builder(layout_main.getContext());
 
         textView_hello.setId(generateViewId());
         textView_hello.setText(Hello.greetings(Build.MODEL));
@@ -75,16 +78,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         new Thread(() -> {
-            String text = String.valueOf(Hello.getCnt());
-            textView_counter.post(() -> textView_counter.setText(text));
+            try {
+                String text = String.valueOf(Hello.getCnt());
+                layout_main.post(() -> textView_counter.setText(text));
+            } catch (Exception e) {
+                e.printStackTrace();
+                layout_main.post(() -> dialogBuilder.setTitle("⚠ Exception ⚠").setMessage(e.getMessage()).show());
+            }
         }).start();
     }
 
     @Override
     public void onClick(View v) {
         new Thread(() -> {
-            String text = String.valueOf(Hello.incCnt());
-            textView_counter.post(() -> textView_counter.setText(text));
+            try {
+                String text = String.valueOf(Hello.incCnt());
+                layout_main.post(() -> textView_counter.setText(text));
+            } catch (Exception e) {
+                e.printStackTrace();
+                layout_main.post(() -> dialogBuilder.setTitle("⚠ Exception ⚠").setMessage(e.getMessage()).show());
+            }
         }).start();
     }
 }
