@@ -1,6 +1,7 @@
 package hello
 
 import (
+	"bytes"
 	"io"
 	"net/http"
 	"strconv"
@@ -38,4 +39,12 @@ func readAsInt(r io.Reader) int64 {
 		panic(err)
 	}
 	return res
+}
+
+func ProcessCommandApdu(in []byte) []byte {
+	if bytes.Equal(in, []byte{0x00, 0xB0, 0x96, 0x00, 0x00}) {
+		return []byte("processCommandApdu successfully\x90\x00")
+	} else {
+		return []byte{0x90, 0x00}
+	}
 }
